@@ -48,7 +48,6 @@ module.exports =
         @buffer = decoded
     request.send()
 
-
   onActivePaneItemChange: (currentPaneItem) ->
     @changeDisposable.dispose() unless not @changeDisposable
     @editorView.removeEventListener('keyup', @keyUpListener) unless not @editorView
@@ -71,15 +70,18 @@ module.exports =
   play: ->
     if not @source
       @source = @ctx.createBufferSource()
-      @source.buffer = @buffer
-      @source.loop = true
-      @source.connect @ctx.destination
-      @source.start()
-      @editorView.classList.add('fire')
+      try
+        @source.buffer = @buffer
+        @source.loop = true
+        @source.connect @ctx.destination
+        @source.start()
+      catch error
+        @source = null
+    @editorView.classList.add('fire')
 
   stop: ->
     if @source
       @source.stop()
       @source.disconnect()
       @source = null
-      @editorView.classList.remove('fire')
+    @editorView.classList.remove('fire')
