@@ -12,7 +12,7 @@ module.exports =
   keyUpListener: null
 
   config:
-    keysPerMinute:
+    keysPerSecond:
       type: 'integer'
       default: 8
       minimum: 1
@@ -61,7 +61,7 @@ module.exports =
       @lastCheck = Date.now()
 
   checkRate: ->
-    if @keysSinceLastCheck > atom.config.get 'speedkills.keysPerMinute'
+    if @keysSinceLastCheck > atom.config.get 'speedkills.keysPerSecond'
       @play()
     else
       @stop()
@@ -77,11 +77,11 @@ module.exports =
         @source.start()
       catch error
         @source = null
-    @editorView.classList.add('fire')
+    @editorView.classList.add('fire') unless not @editorView
 
   stop: ->
     if @source
       @source.stop()
       @source.disconnect()
       @source = null
-    @editorView.classList.remove('fire')
+    @editorView.classList.remove('fire') unless not @editorView
